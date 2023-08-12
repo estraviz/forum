@@ -1,5 +1,5 @@
 from django.urls import path, re_path
-from .views import CommentListView, PostDetailView, PostListView, index
+from .views import CommentListView, PostDetailView, PostListView, TestTemplateView, index
 
 urlpatterns = [
     # ex: /forum/
@@ -7,6 +7,8 @@ urlpatterns = [
 
     # ex: /forum/5/
     path('<int:pk>/', PostDetailView.as_view(), name='detail'),
+
+    path('test/', TestTemplateView.as_view(), name='template'),
 
     # ex: /forum/5/comment/
     path('<int:post_id>/comment/', CommentListView.as_view(), name='comment'),

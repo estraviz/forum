@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any, Dict
 from django import http
 from django.db.models.query import QuerySet
@@ -5,10 +6,18 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.base import TemplateView
 from .models import Post, Comment
+from django.contrib import messages
+from django.contrib.messages import get_messages
 
 def index(request):
+    request.session.clear()
+    messages.add_message(request, messages.INFO, 'Hello, World!')
     return HttpResponse('<html><body>Our first response</body></html>')
+
+class TestTemplateView(TemplateView):
+    template_name = 'test_template.html'
 
 class PostListView(ListView):
     model = Post
@@ -26,12 +35,25 @@ class PostListView(ListView):
         return self.queryset
 
     def render_to_response(self, context: Dict[str, Any], **response_kwargs: Any) -> HttpResponse:
+        first_viewed = self.request.session.get('first_viewed', False)
+
+        if first_viewed:
+            return HttpResponse(f'You first viewed on {first_viewed}')
+
+        self.request.session['first_viewed'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        message_content = ''
+        storage = get_messages(self.request)
+
+        for message in storage:
+            message_content += f'<li>{message}</li>'
+
         posts = ''
 
         for post in context['post_data']:
             posts += f'<li>{post.title}</li>'
 
-        return HttpResponse(f'<html><body>{posts}</body></html>')
+        return HttpResponse(f'<html><body><ul>{posts}</ul><ul>{message_content}</ul></body></html>')
 
 
 class PostDetailView(DetailView):
