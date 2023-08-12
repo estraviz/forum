@@ -1,9 +1,14 @@
 from django.urls import path, re_path
-from .views import CommentListView, PostDetailView, PostListView, TestTemplateView, index
+
+from .forum_feeds import LatestPostFeed
+from .views import (CommentListView, PostDetailView, PostListView,
+                    TestTemplateView, index)
 
 urlpatterns = [
     # ex: /forum/
     path('', index, name='index'),
+
+    path('latest/posts/', LatestPostFeed()),
 
     # ex: /forum/5/
     path('<int:pk>/', PostDetailView.as_view(), name='detail'),

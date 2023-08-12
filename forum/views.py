@@ -1,15 +1,32 @@
 from datetime import datetime
 from typing import Any, Dict
+
 from django import http
-from django.db.models.query import QuerySet
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
-from django.views.generic.base import TemplateView
-from .models import Post, Comment
 from django.contrib import messages
 from django.contrib.messages import get_messages
+from django.core.signals import request_finished
+from django.db.models.query import QuerySet
+from django.http import HttpResponse
+from django.shortcuts import render
+from django.views.generic.base import TemplateView
+from django.views.generic.detail import DetailView
+from django.views.generic.list import ListView
+
+from .models import Comment, Post
+from django.core.mail import send_mail
+
+
+def my_callback(sender, **kwargs):
+    print("Request finished!\n")
+    send_mail(
+        subject='Subject of some sort',
+        message='Here is the message',
+        from_email='from@example.com',
+        recipient_list=['to@example.com'],
+        fail_silently=False
+    )
+
+request_finished.connect(my_callback)
 
 def index(request):
     request.session.clear()
