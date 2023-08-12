@@ -1,21 +1,22 @@
 from django.urls import path, re_path
+from .views import CommentListView, PostDetailView, PostListView, index
 
 urlpatterns = [
     # ex: /forum/
-    path('', 'views.index', name='index'),
+    path('', index, name='index'),
 
     # ex: /forum/5/
-    path('<int:post_id', 'views.detail', name='detail'),
+    path('<int:pk>/', PostDetailView.as_view(), name='detail'),
 
     # ex: /forum/5/comment/
-    path('<int:post_id>/comment/', 'views.comment', name='comment'),
+    path('<int:post_id>/comment/', CommentListView.as_view(), name='comment'),
 
     # ex: /posts/2023/
-    re_path(r'^posts/(?P<year>[0-9]{4})/$', 'views.year_archive', name='by_year'),
+    re_path(r'^posts/(?P<year>[0-9]{4})/$', PostListView.as_view(), name='by_year'),
 
     # ex: /posts/2023/3
-    re_path(r'^posts/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/$', 'views.month_archive', name='by_month'),
+    re_path(r'^posts/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/$', PostListView.as_view(), name='by_month'),
 
-    # ex: /posts/2023/3/post-slug/
-    re_path(r'^posts/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<slug>[\w-]+)/$', 'views.post_detail', name='slug_detail'),
+    # # ex: /posts/2023/3/post-slug/
+    # re_path(r'^posts/(?P<year>[0-9]{4})/(?P<month>[0-9]{2})/(?P<slug>[\w-]+)/$', 'views.post_detail', name='slug_detail'),
 ]
