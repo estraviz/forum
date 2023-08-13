@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+  {% load i18n %}
   <head>
     {% load static %}
     <link rel="stylesheet" href="{% static 'styles.css' %}" />
   </head>
 
   <body>
-    <div class="red">This should be red.</div>
+    <div class="red">{% translate "This should be red." %}</div>
   </body>
 </html>
