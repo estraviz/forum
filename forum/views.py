@@ -36,6 +36,11 @@ def index(request):
 class TestTemplateView(TemplateView):
     template_name = 'test_template.html'
 
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["today"] = datetime.now().date()
+        return context
+
 class PostListView(ListView):
     model = Post
     context_object_name = 'post_data'
